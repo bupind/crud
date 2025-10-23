@@ -34,7 +34,7 @@ class InstallCommand extends Command
     {
         $this->directory  = config('backend.directory');
         $this->routesPath = base_path();
-        if (!is_dir($this->directory)) {
+        if(!is_dir($this->directory)) {
             $this->makeDir('/');
             $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '', $this->directory));
         } else {
@@ -93,10 +93,9 @@ class InstallCommand extends Command
         $this->laravel['files']->put($file, str_replace('DummyNamespace', config('backend.route.namespace'), $contents));
         $this->line('<info>Routes file was created:</info> ' . str_replace(base_path(), '', $file));
         $webFile     = base_path('routes/web.php');
-        $requireLine = "require __DIR__.'/backend.php';";
         $webContents = $this->laravel['files']->get($webFile);
-        if(strpos($webContents, $requireLine) === false) {
-            $this->laravel['files']->append($webFile, PHP_EOL . $requireLine . PHP_EOL);
+        if(!preg_match("/require\s*__DIR__\s*\.\s*['\"]\/backend\.php['\"]\s*;?/", $webContents)) {
+            $this->laravel['files']->append($webFile, PHP_EOL . "require __DIR__.'/backend.php';" . PHP_EOL);
             $this->line('<info>Added require to routes/web.php</info>');
         } else {
             $this->line('<comment>routes/web.php already contains require backend.php</comment>');
