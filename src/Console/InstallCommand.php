@@ -34,12 +34,12 @@ class InstallCommand extends Command
     {
         $this->directory  = config('backend.directory');
         $this->routesPath = base_path();
-        if(is_dir($this->directory)) {
-            $this->line("<error>{$this->directory} directory already exists !</error> ");
-            return;
+        if (!is_dir($this->directory)) {
+            $this->makeDir('/');
+            $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '', $this->directory));
+        } else {
+            $this->line("<comment>{$this->directory} directory already exists, skipped creation.</comment>");
         }
-        $this->makeDir('/');
-        $this->line('<info>Admin directory was created:</info> ' . str_replace(base_path(), '', $this->directory));
         $this->createHomeController();
         $this->createAuthController();
         $this->createBootstrapFile();
